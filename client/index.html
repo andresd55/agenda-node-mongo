@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio de sesión</title>
-    <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" href="css/styles.css"/>
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Kaushan+Script|Neucha" rel="stylesheet">
   </head>
@@ -16,23 +16,45 @@
         <input type="text" id="user" placeholder="Usuario..." />
         <input type="password" id="pass" placeholder="Contraseña..." />
         <button id="login" class="loginButton">Ingresar</button>
+        <div id="msg" style="display:none; background-color: white; border-radius: 5px; margin: 3vh; padding: 1vh;"></div>
       </div>
     </div>
-    <script src="jquery.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script>
+    function showMessage(response){
+      $('#msg').show('fold').html('<p>'+response+'</p>')
+    }
+
+
+
         var nombreUsuario = $('#user')
         var pass = $('#pass')
         $('.loginButton').on('click', function(event) {
             if (nombreUsuario.val() != "" && pass.val() != "") {
-                $.post('/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
+                $.post('/usuarios/login',{user: nombreUsuario.val(), pass: pass.val()}, function(response) {
+                  showMessage(response)
                     if (response == "Validado") {
                         window.location.href = "http://localhost:3000/main.html"
                     }
-                })
+              })
             } else {
                 alert("Complete todos los campos")
             }
-        })
-    </script>
-  </body>
+          })
+
+  verificarUsuarios();
+
+  function verificarUsuarios() {
+      $.ajax({
+          url: '/usuarios/demo',
+          method: 'GET',
+          data: {user:'demo'},
+          success: function(response) {
+              showMessage(response)
+          }
+      })
+  }
+  </script>
+</body>
 </html>
